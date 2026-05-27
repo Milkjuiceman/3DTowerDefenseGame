@@ -1,4 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://uonjm3jfmpvq"]
+[gd_scene load_steps=5 format=3 uid="uid://uonjm3jfmpvq"]
+
+[ext_resource type="Script" uid="uid://de4hl4gfo2qrj" path="res://Scripts/enemy.gd" id="1_f1y8x"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ghrv7"]
 albedo_color = Color(0.8671072, 0, 0.3194266, 1)
@@ -8,7 +10,8 @@ material = SubResource("StandardMaterial3D_ghrv7")
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_ghrv7"]
 
-[node name="Enemy1" type="Node3D"]
+[node name="Enemy2" type="Node3D"]
+script = ExtResource("1_f1y8x")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("SphereMesh_ghrv7")
