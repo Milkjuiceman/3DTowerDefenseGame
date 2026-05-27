@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://b7g8yleslbwl5"]
 
-[ext_resource type="Script" uid="uid://bjhmcwasxfror" path="res://Scripts/tower.gd" id="1_qmojb"]
+[ext_resource type="Script" uid="uid://dxtl0an643r2q" path="res://Scripts/tower_instance.gd" id="1_qmojb"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ttnoe"]
 albedo_color = Color(0.19793725, 0.19793722, 0.19793722, 1)
@@ -9,6 +9,8 @@ albedo_color = Color(0.19793725, 0.19793722, 0.19793722, 1)
 material = SubResource("StandardMaterial3D_ttnoe")
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_t1"]
+height = 2.0
+radius = 0.5
 
 [node name="Tower1" type="Node3D"]
 script = ExtResource("1_qmojb")
