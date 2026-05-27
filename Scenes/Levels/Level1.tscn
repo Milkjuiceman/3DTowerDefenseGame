@@ -1,0 +1,44 @@
+[gd_scene load_steps=7 format=3 uid="uid://cwc826fuapm74"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kkjbe"]
+size = Vector3(50.082977, 1, 50.068405)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kkjbe"]
+albedo_color = Color(0.21452516, 0.43468642, 0.31658265, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_kkjbe"]
+material = SubResource("StandardMaterial3D_kkjbe")
+
+[sub_resource type="Curve3D" id="Curve3D_kkjbe"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -48.225, 0, 0),
+"tilts": PackedFloat32Array(0, 0)
+}
+point_count = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5jgm0"]
+albedo_color = Color(0.5141525, 0.491449, 0.14679843, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_36ke7"]
+material = SubResource("StandardMaterial3D_5jgm0")
+
+[node name="Level1" type="Node3D"]
+
+[node name="Ground" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.0556755, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.578537, 0, -0.033927917)
+shape = SubResource("BoxShape3D_kkjbe")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(50, 0, 0, 0, 1, 0, 0, 0, 50, -9.609846, 0, 0)
+mesh = SubResource("BoxMesh_kkjbe")
+
+[node name="Path3D" type="Path3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.555922, 0.48724568, 0)
+curve = SubResource("Curve3D_kkjbe")
+
+[node name="Path" type="MeshInstance3D" parent="."]
+transform = Transform3D(53.04, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.056707382, 0)
+mesh = SubResource("BoxMesh_36ke7")
