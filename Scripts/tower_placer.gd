@@ -12,11 +12,15 @@ var _ghost: Node3D = null
 var _placing: bool = false
 var _placed_towers: Array[Node3D] = []
 var _camera: Camera3D
-var _can_place: bool = false   # Tracks if current ghost position is affordable
+var _can_place: bool = false
+var _hud: Node = null
 
 
 func _ready() -> void:
 	_camera = get_viewport().get_camera_3d()
+	# Find HUD after scene is ready
+	await get_tree().process_frame
+	_hud = get_tree().current_scene.find_child("Hud", true, false)
 
 
 func _input(event: InputEvent) -> void:
@@ -57,12 +61,17 @@ func _enter_placement_mode(index: int) -> void:
 
 	_ghost = tower_scenes[index].instantiate()
 	add_child(_ghost)
+	# Disable scripts on ghost so it doesn't shoot or move
 	_ghost.set_process(false)
 	_ghost.set_physics_process(false)
-	_set_ghost_transparency(_ghost, 0.45)
+	# Apply a clean semi-transparent ghost look
+	_set_ghost_material(_ghost, Color(0.6, 0.9, 1.0, 0.35))
+
+	if _hud and _hud.has_method("show_tower_info"):
+		_hud.show_tower_info(index)
 
 
-func _place_tower(position: Vector3) -> void:
+func _place_tower(place_pos: Vector3) -> void:
 	var cost := tower_costs[_selected_index] if _selected_index < tower_costs.size() else 50
 	if not GameManager.spend_gold(cost):
 		print("Not enough gold!")
@@ -71,15 +80,18 @@ func _place_tower(position: Vector3) -> void:
 
 	var tower: Node3D = tower_scenes[_selected_index].instantiate()
 	get_tree().current_scene.add_child(tower)
-	tower.global_position = position
+	tower.global_position = place_pos
 	tower.add_to_group("towers")
 
 	if bullet_scene != null:
 		tower.set("bullet_scene", bullet_scene)
 
-	# Apply per-tower stats based on type
 	_apply_tower_stats(tower, _selected_index)
 	_placed_towers.append(tower)
+
+	# Keep placing same tower type (re-enter mode)
+	_cancel_placement()
+	_enter_placement_mode(_selected_index)
 
 
 func _apply_tower_stats(tower: Node3D, index: int) -> void:
@@ -104,9 +116,9 @@ func _apply_tower_stats(tower: Node3D, index: int) -> void:
 func _update_ghost_affordability() -> void:
 	var cost := tower_costs[_selected_index] if _selected_index < tower_costs.size() else 50
 	_can_place = GameManager.can_afford(cost)
-	# Tint green if affordable, red if not
-	var tint := Color(0.4, 1.0, 0.4, 0.45) if _can_place else Color(1.0, 0.3, 0.3, 0.45)
-	_set_ghost_color(_ghost, tint)
+	# Green-tinted if affordable, red-tinted if not
+	var tint := Color(0.4, 1.0, 0.5, 0.35) if _can_place else Color(1.0, 0.3, 0.3, 0.35)
+	_set_ghost_material(_ghost, tint)
 
 
 func _cancel_placement() -> void:
@@ -114,6 +126,10 @@ func _cancel_placement() -> void:
 	if _ghost:
 		_ghost.queue_free()
 		_ghost = null
+	if _hud and _hud.has_method("hide_tower_info"):
+		_hud.hide_tower_info()
+	if _hud and _hud.has_method("clear_tower_selection"):
+		_hud.clear_tower_selection()
 
 
 func _raycast_ground(screen_pos: Vector2) -> Variant:
@@ -132,32 +148,18 @@ func _raycast_ground(screen_pos: Vector2) -> Variant:
 	return hit_pos
 
 
-func _set_ghost_transparency(node: Node3D, alpha: float) -> void:
+func _set_ghost_material(node: Node3D, color: Color) -> void:
+	## Recursively applies a clean transparent override material to all MeshInstance3D children.
+	## This replaces the old approach that duplicated materials and caused the "blob" look.
 	if node is MeshInstance3D:
 		var mesh_inst := node as MeshInstance3D
 		var surface_count: int = mesh_inst.mesh.get_surface_count() if mesh_inst.mesh else 0
-		for i in surface_count:
-			var mat := mesh_inst.get_active_material(i)
-			var dup: StandardMaterial3D
-			if mat is StandardMaterial3D:
-				dup = mat.duplicate() as StandardMaterial3D
-			else:
-				dup = StandardMaterial3D.new()
-			dup.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-			dup.albedo_color.a = alpha
-			mesh_inst.set_surface_override_material(i, dup)
+		for i in range(surface_count):
+			var mat := StandardMaterial3D.new()
+			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			mat.albedo_color = color
+			mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+			mesh_inst.set_surface_override_material(i, mat)
 	for child in node.get_children():
 		if child is Node3D:
-			_set_ghost_transparency(child as Node3D, alpha)
-
-
-func _set_ghost_color(node: Node3D, color: Color) -> void:
-	if node is MeshInstance3D:
-		var mesh_inst := node as MeshInstance3D
-		for i in mesh_inst.get_surface_override_material_count():
-			var mat := mesh_inst.get_surface_override_material(i) as StandardMaterial3D
-			if mat:
-				mat.albedo_color = color
-	for child in node.get_children():
-		if child is Node3D:
-			_set_ghost_color(child as Node3D, color)
+			_set_ghost_material(child as Node3D, color)

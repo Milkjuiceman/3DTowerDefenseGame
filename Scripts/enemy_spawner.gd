@@ -1,13 +1,11 @@
 extends Node3D
 
-## Attach to an "EnemySpawner" Node3D in Level1.tscn.
-
 @export var path: Path3D
 @export var enemy_scenes: Array[PackedScene] = []
 @export var total_waves: int = 5
 @export var base_enemies_per_wave: int = 5
 @export var base_spawn_interval: float = 2.0
-@export var wave_start_delay: float = 3.0   # Pause between waves
+@export var wave_start_delay: float = 3.0
 
 signal wave_started(wave: int)
 signal wave_completed(wave: int)
@@ -18,7 +16,6 @@ var _enemies_spawned: int = 0
 var _active_enemies: int = 0
 var _spawn_timer: float = 0.0
 var _spawning: bool = false
-var _waiting_for_next_wave: bool = false
 
 
 func _ready() -> void:
@@ -30,7 +27,6 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if not _spawning:
 		return
-
 	_spawn_timer -= delta
 	var enemies_this_wave := _enemies_this_wave()
 	if _spawn_timer <= 0.0 and _enemies_spawned < enemies_this_wave:
@@ -43,25 +39,21 @@ func _start_next_wave() -> void:
 		all_waves_completed.emit()
 		GameManager.game_won.emit()
 		return
-
 	_current_wave += 1
 	_enemies_spawned = 0
 	_active_enemies = 0
 	_spawning = true
 	_spawn_timer = 0.0
-
 	GameManager.set_wave(_current_wave)
 	wave_started.emit(_current_wave)
 	print("Wave %d started!" % _current_wave)
 
 
 func _enemies_this_wave() -> int:
-	## More enemies each wave
 	return base_enemies_per_wave + (_current_wave - 1) * 2
 
 
 func _spawn_interval_this_wave() -> float:
-	## Spawn faster each wave (minimum 0.6s)
 	return max(0.6, base_spawn_interval - (_current_wave - 1) * 0.2)
 
 
@@ -69,35 +61,27 @@ func _spawn_enemy() -> void:
 	if path == null or enemy_scenes.is_empty():
 		push_error("EnemySpawner: assign Path3D and enemy scenes.")
 		return
-
-	# Weight enemy type toward tougher enemies in later waves
 	var scene: PackedScene = _pick_enemy_scene()
 	var enemy: Node3D = scene.instantiate()
-
 	var follower := PathFollow3D.new()
 	follower.loop = false
 	follower.rotation_mode = PathFollow3D.ROTATION_ORIENTED
 	path.add_child(follower)
 	follower.progress_ratio = 0.0
-
 	get_tree().current_scene.add_child(enemy)
 	enemy.setup(follower)
 	enemy.apply_wave_scaling(_current_wave)
-
 	enemy.reached_end.connect(_on_enemy_reached_end)
 	enemy.died.connect(_on_enemy_died)
-
 	_enemies_spawned += 1
 	_active_enemies += 1
 
 
 func _pick_enemy_scene() -> PackedScene:
-	## Early waves: only Enemy1. Later waves introduce tougher types.
 	var max_type: int = min(_current_wave, enemy_scenes.size()) - 1
-	# Bias toward lower index (weaker) enemies but allow tougher ones
 	var weights: Array[float] = []
 	for i in range(max_type + 1):
-		weights.append(pow(0.5, float(max_type - i)))  # tougher = rarer early on
+		weights.append(pow(0.5, float(max_type - i)))
 	var total: float = weights.reduce(func(a: float, b: float) -> float: return a + b)
 	var roll: float = randf() * total
 	var cumulative := 0.0

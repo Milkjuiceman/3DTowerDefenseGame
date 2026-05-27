@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://cwc826fuapm74"]
+[gd_scene load_steps=20 format=3 uid="uid://cwc826fuapm74"]
 
 [ext_resource type="Script" uid="uid://sxj8iy4507k0" path="res://Scripts/enemy_spawner.gd" id="1_5jgm0"]
 [ext_resource type="PackedScene" uid="uid://udd4vyv8d6ku" path="res://Scenes/Enemies/Enemy1.tscn" id="2_xvio3"]
@@ -9,7 +9,9 @@
 [ext_resource type="PackedScene" uid="uid://og7lvxaekrvl" path="res://Scenes/Towers/Tower2.tscn" id="7_jcebb"]
 [ext_resource type="PackedScene" uid="uid://b7jitshop268t" path="res://Scenes/Towers/Tower3.tscn" id="8_f3nwb"]
 [ext_resource type="PackedScene" uid="uid://cm3urgrwkxg8f" path="res://Scenes/Projectiles/BulletBasic.tscn" id="9_jcebb"]
-[ext_resource type="PackedScene" uid="uid://b3ufs2px1u043" path="res://Scenes/UI/HUD.tscn" id="10_f3nwb"]
+[ext_resource type="PackedScene" uid="uid://dfoh0dr2srqtv" path="res://Scenes/UI/HUD.tscn" id="10_f3nwb"]
+[ext_resource type="Script" uid="uid://d1pt8vf3eb41e" path="res://Scripts/tower_click_detector.gd" id="11_57lp3"]
+[ext_resource type="Script" uid="uid://b1pu4w166ox7i" path="res://Scripts/tower_data_factory.gd" id="12_n5ptj"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_kkjbe"]
 size = Vector3(50.082977, 1, 50.068405)
@@ -75,6 +77,11 @@ transform = Transform3D(53.04, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.056707382, 0)
 script = ExtResource("5_kri6y")
 tower_scenes = Array[PackedScene]([ExtResource("6_8h4de"), ExtResource("7_jcebb"), ExtResource("8_f3nwb")])
 bullet_scene = ExtResource("9_jcebb")
-placement_layer = null
 
 [node name="Hud" parent="." instance=ExtResource("10_f3nwb")]
+
+[node name="TowerClickDetector" type="Node3D" parent="."]
+script = ExtResource("11_57lp3")
+
+[node name="Node3D" type="Node3D" parent="."]
+script = ExtResource("12_n5ptj")

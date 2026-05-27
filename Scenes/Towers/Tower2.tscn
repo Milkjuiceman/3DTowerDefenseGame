@@ -1,6 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://og7lvxaekrvl"]
+[gd_scene load_steps=5 format=3 uid="uid://og7lvxaekrvl"]
 
-[ext_resource type="Script" uid="uid://bjhmcwasxfror" path="res://Scripts/tower.gd" id="1_exngp"]
+[ext_resource type="Script" uid="uid://bjhmcwasxfror" path="res://Scripts/tower_instance.gd" id="1_exngp"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ttnoe"]
 albedo_color = Color(0.46508932, 0.17944536, 0.43290636, 1)
@@ -8,7 +8,11 @@ albedo_color = Color(0.46508932, 0.17944536, 0.43290636, 1)
 [sub_resource type="CylinderMesh" id="CylinderMesh_qmojb"]
 material = SubResource("StandardMaterial3D_ttnoe")
 
-[node name="Tower1" type="Node3D"]
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_t2"]
+height = 2.0
+radius = 0.5
+
+[node name="Tower2" type="Node3D"]
 script = ExtResource("1_exngp")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
@@ -16,3 +20,8 @@ mesh = SubResource("CylinderMesh_qmojb")
 
 [node name="Node3D" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8637179, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("CylinderShape3D_t2")

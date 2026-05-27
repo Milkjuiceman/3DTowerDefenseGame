@@ -1,0 +1,94 @@
+[gd_scene load_steps=2 format=3 uid="uid://upgrade_panel_001"]
+
+[ext_resource type="Script" path="res://Scripts/upgrade_panel.gd" id="1_panel"]
+
+[node name="UpgradePanel" type="Control"]
+script = ExtResource("1_panel")
+visible = false
+layout_mode = 1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -360.0
+offset_top = -280.0
+offset_right = 0.0
+offset_bottom = 280.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.08, 0.08, 0.12, 0.95)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 6
+
+[node name="TopRow" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 36)
+
+[node name="TitleLabel" type="Label" parent="VBoxContainer/TopRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Tower"
+theme_override_font_sizes/font_size = 20
+
+[node name="CloseButton" type="Button" parent="VBoxContainer/TopRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(36, 36)
+text = "X"
+theme_override_font_sizes/font_size = 16
+
+[node name="StatsLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 24)
+text = "DMG: --  |  Rate: --  |  Range: --"
+theme_override_font_sizes/font_size = 13
+
+[node name="PathLabels" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 20)
+
+[node name="PathALabel" type="Label" parent="VBoxContainer/PathLabels"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "PATH A - Power"
+theme_override_font_sizes/font_size = 12
+modulate = Color(0.4, 0.8, 1.0, 1.0)
+
+[node name="PathBLabel" type="Label" parent="VBoxContainer/PathLabels"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "PATH B - Utility"
+horizontal_alignment = 2
+theme_override_font_sizes/font_size = 12
+modulate = Color(0.4, 1.0, 0.5, 1.0)
+
+[node name="GraphArea" type="Control" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+custom_minimum_size = Vector2(0, 340)
+mouse_filter = 0
+
+[node name="SellButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 36)
+text = "Sell (~0g)"
+theme_override_font_sizes/font_size = 14
+modulate = Color(1.0, 0.4, 0.4, 1.0)

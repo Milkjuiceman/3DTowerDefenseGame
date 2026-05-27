@@ -1,13 +1,10 @@
 extends Node
 
-## Autoload singleton — add this in Project > Project Settings > Autoload
-## Name it "GameManager" so all scripts can access it globally.
-
 signal gold_changed(new_amount: int)
 signal lives_changed(new_amount: int)
 signal wave_changed(new_wave: int)
-signal game_over()
-signal game_won()
+signal game_over
+signal game_won
 
 const STARTING_GOLD: int = 150
 const STARTING_LIVES: int = 20
@@ -15,7 +12,7 @@ const STARTING_LIVES: int = 20
 var gold: int = STARTING_GOLD
 var lives: int = STARTING_LIVES
 var current_wave: int = 0
-var total_waves: int = 0  # Set by EnemySpawner on ready
+var total_waves: int = 0
 
 
 func add_gold(amount: int) -> void:

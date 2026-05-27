@@ -18,3 +18,4 @@ config/icon="res://icon.svg"
 [autoload]
 
 GameManager="*res://Scripts/game_manager.gd"
+UpgradeManager="*res://Scripts/upgrade_manager.gd"
